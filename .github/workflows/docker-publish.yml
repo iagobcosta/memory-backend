@@ -34,15 +34,15 @@ jobs:
       - name: Compute image metadata
         id: meta
         run: |
-          # get version from backend/package.json
-          VERSION=$(node -p "require('./backend/package.json').version")
+          # get version from package.json
+          VERSION=$(node -p "require('./package.json').version")
           # short sha
           SHA=${GITHUB_SHA::7}
           # default image name if DOCKERHUB_REPO not provided
           if [ -n "${{ env.DOCKERHUB_REPO }}" ]; then
             IMAGE=${{ env.DOCKERHUB_REPO }}
           else
-            IMAGE=${{ env.DOCKERHUB_USERNAME }}/memory-backend
+            IMAGE=${{ env.DOCKERHUB_USERNAME }}/memory-backend-api
           fi
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "sha=$SHA" >> $GITHUB_OUTPUT
@@ -52,7 +52,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          file: backend/Dockerfile
+          file: /Dockerfile
           push: true
           platforms: linux/amd64,linux/arm64
           tags: |
