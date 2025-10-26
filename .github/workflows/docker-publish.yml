@@ -34,7 +34,7 @@ jobs:
       - name: Compute image metadata
         id: meta
         run: |
-          # get version from package.json
+          # get version from package.json at repo root
           VERSION=$(node -p "require('./package.json').version")
           # short sha
           SHA=${GITHUB_SHA::7}
@@ -51,8 +51,10 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
+          # build context is the repository root (Dockerfile is in repo root since you pushed backend folder only)
           context: .
-          file: /Dockerfile
+          # Dockerfile path relative to the repository root
+          file: ./Dockerfile
           push: true
           platforms: linux/amd64,linux/arm64
           tags: |
